@@ -3,7 +3,7 @@ const morgan = require('morgan');
 const app = express();
 const port = 3000;
 
-const user = require('./routes/user.route');
+const ROUTE = require('./routes');
 
 
 app.use(morgan('combined'));
@@ -15,7 +15,7 @@ app.get('/', (req, res) => {
     res.send(` ${c}ok`);
 })
 
-app.use('/user', user)
+app.use('/app', ROUTE)
 
 
 app.listen(port, () => {

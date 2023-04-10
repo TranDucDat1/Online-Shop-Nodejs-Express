@@ -1,10 +1,26 @@
 const express = require('express');
 const morgan = require('morgan');
 const app = express();
-const port = 3000;
+const mongoose = require('mongoose');
+const { join } = require('path');
+const dotenv = require('dotenv');
+
+dotenv.config({
+    path: join(__dirname, '../.env'),
+});
 
 const ROUTE = require('./routes');
+const PORT = process.env.PORT || 3000;
 
+try {
+    mongoose.connect(process.env.MONGO_URL, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+    });
+    console.log('Successfully connected to the mongo database!');
+} catch (error) {
+    console.log('Lỗi server');
+}
 
 app.use(morgan('combined'));
 
@@ -18,6 +34,6 @@ app.get('/', (req, res) => {
 app.use('/app', ROUTE)
 
 
-app.listen(port, () => {
-    console.log(`App listening on ${port}`);
-});
+app.listen(PORT, () => {
+    console.log(`App listening on ${PORT}}`);
+}); 

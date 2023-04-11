@@ -1,10 +1,10 @@
-import mongoose, { model } from "mongoose";
+const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const catalogSchema = new Schema(
     {
         name: { type: String },
-        items: [{ product_id: { type: String } }]
+        product_id: { type: String }
     },
     {
         timestamps: {

@@ -1,7 +1,17 @@
-const USER = require('../model/user.model');
+const USER = require('../models/user.model');
 
-exports.getUsers = async (req, res ) => {
-    const user = await USER.findOne({ _id: '6433d9accff4196fa3bbe882' }).lean();
-    console.log('user', user.name);
+async function getUsers(req, res ) {
+    const user = await USER.findOne({ _id: req.params.id }).lean();
+    console.log('user', req.params.id);
     res.status(200).json(user);
 }
+
+async function getUsers2(req, res ) {
+    const user = await USER.findOne({ _id: req.params.id }).lean();
+    console.log('user', req.params.id);
+    res.status(200).json(user);
+}
+
+
+module.exports.getUsers = getUsers
+module.exports.getUsers2 = getUsers2

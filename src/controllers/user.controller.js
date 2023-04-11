@@ -1,5 +1,6 @@
 const _ = require('lodash');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 const { UserService } = require('../service');
 
@@ -20,10 +21,24 @@ exports.getUser = async (req, res ) => {
 exports.login = async (req, res ) => {
     const data = req.body;
     try {
-        const user = await UserService.findUserById(req.params.id);
-        if(_.isNil(user)) { return res.status(400).send('Not found') };  
-        console.log('user', user);
-        return res.status(200).json(user);
+        // console.log('dataPassword: ', data.password);
+        const user = await UserService.findUserByPhone(data.phone);
+        // console.log('user: ', user);
+        if(_.isNil(user)) { return res.status(404).send('số điện thoại chưa được đăng ký') };
+
+        const checkUser = await bcrypt.compareSync(data.password, user.password);
+        // console.log('checkUser', checkUser);
+        if(checkUser === false) { return res.status(404).send('mật khẩu không chính xác') };
+
+        const payload = data;
+        const token = jwt.sign(payload, 'shhhhh', { algorithm: 'HS256', expiresIn: '1h' });
+
+        const newData = {
+            ...data,
+            token: token,
+        };
+
+        return res.status(200).json(newData);
     } catch (error) {
         console.log('error', error);
     }

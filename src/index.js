@@ -22,6 +22,8 @@ try {
     console.log('Lỗi server');
 }
 
+app.use(express.json());
+
 app.use(morgan('combined'));
 
 app.get('/', (req, res) => {

@@ -4,7 +4,6 @@ const { Schema } = mongoose;
 const catalogSchema = new Schema(
     {
         name: { type: String },
-        product_id: { type: String }
     },
     {
         timestamps: {

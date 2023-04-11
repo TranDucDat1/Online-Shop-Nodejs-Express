@@ -3,7 +3,7 @@ const { Schema } = mongoose;
 
 const cartSchema = new Schema(
     {
-        items: [{ product_id: {type: String } }]
+        items: [{ product_id: {type: String }, quantity: {type: Number} }]
     },
     {
         timestamps: {

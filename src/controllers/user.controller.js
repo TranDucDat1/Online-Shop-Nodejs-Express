@@ -19,6 +19,38 @@ exports.getUser = async (req, res ) => {
     }
 }
 
+exports.getManyUser = async (req, res ) => {
+    const queryUser = _.omitBy(
+        {
+            name: req.query.name,
+            phone: req.query.phone,
+        },
+        _.isNil
+    )
+    const filter = {
+        pageNumber: req.query.pageNumber ? Number(req.query.pageNumber) : 0,
+        limit:  req.query.limit ? Number(req.query.limit) : 10
+    }
+
+    const sortByName = {
+        name: req.query.sort ? req.query.sort : {}
+    }
+    try {  
+        // const phone = query.phone;
+        const user = await UserService.findManyUser(queryUser, filter, sortByName);
+        // console.log('user', user);
+        
+        const data = {
+            user,
+            pageNumber: req.query.pageNumber,
+        }
+        
+        return res.status(200).json(data);
+    } catch (error) {
+        console.log('error', error);
+    }
+}
+
 exports.login = async (req, res ) => {
     const data = req.body;
     try {

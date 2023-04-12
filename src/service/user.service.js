@@ -13,3 +13,5 @@ exports.restoreUser = async (id) => await User.findOneAndUpdateDeleted({ _id: id
 exports.findUserDeleted = async (id) => await User.findOneDeleted({ _id: id });
 
 exports.deleteUserById = async (id) => await User.deleteOne({ _id: id });
+
+exports.updateUser = async (id, name, email) => await User.findOneAndUpdate({ _id: id }, { $set: { name, email } }, { new: true });

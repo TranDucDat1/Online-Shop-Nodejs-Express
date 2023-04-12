@@ -106,3 +106,16 @@ exports.deleteUser = async (req, res ) => {
         console.log('error', error);
     }
 }
+
+exports.updateUser = async (req, res ) => {
+    const user_id = req.params.id;
+    const data = req.body;
+    try {
+        const result = await UserService.updateUser(user_id, data.name, data.email);
+        if(_.isNil(result)) { return res.status(404).send('Không tìm thấy user') };
+        console.log('result: ', result);
+        return res.status(200).json(result);
+    } catch (error) {
+        console.log('error', error);
+    }
+}

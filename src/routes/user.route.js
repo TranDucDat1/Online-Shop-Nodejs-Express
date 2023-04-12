@@ -13,5 +13,6 @@ router.post('/create-user', User.createUser);
 router.delete('/soft-delete-user/:id', User.softDeleteUser);
 router.get('/restore-user/:id', User.restoreUser);
 router.delete('/delete-user/:id', User.deleteUser);
+router.patch('/update-user/:id', User.updateUser);
 
 module.exports = router;

@@ -1,6 +1,7 @@
 const _ = require('lodash');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const { mongoose } = require('mongoose');
 
 const { UserService } = require('../service');
 
@@ -63,6 +64,43 @@ exports.createUser = async (req, res ) => {
         
         console.log('password: ', newData);
         console.log('request: ', req.body);
+        return res.status(200).send('thanh cong');
+    } catch (error) {
+        console.log('error', error);
+    }
+}
+
+exports.softDeleteUser = async (req, res ) => {
+    const user_id = req.params.id;
+    try {
+        const user = await UserService.findUserById(user_id);
+        if(_.isNil(user)) { return res.status(404).send('Not found') };
+
+        await UserService.softDeleteUser(user_id);
+        return res.status(200).send('thanh cong');
+    } catch (error) {
+        console.log('error', error);
+    }
+}
+
+exports.restoreUser = async (req, res ) => {
+    const user_id = req.params.id;
+    try {
+        await UserService.restoreUser(user_id);
+        return res.status(200).send('thanh cong');
+    } catch (error) {
+        console.log('error', error);
+    }
+}
+
+exports.deleteUser = async (req, res ) => {
+    const user_id = req.params.id;
+    try {
+        const user = await UserService.findUserDeleted(user_id);
+        if(_.isNil(user)) { return res.status(404).send('Không tìm thấy user') };
+
+        await UserService.deleteUserById(user._id);
+        console.log('user: ', user);
         return res.status(200).send('thanh cong');
     } catch (error) {
         console.log('error', error);

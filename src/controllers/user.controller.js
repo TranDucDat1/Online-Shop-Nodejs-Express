@@ -6,7 +6,6 @@ const { mongoose } = require('mongoose');
 const { UserService } = require('../service');
 
 const { ROLE_USER } = require('../constants/user.constants');
-console.log('R: ', ROLE_USER.admin);
 
 exports.getUser = async (req, res ) => {
     try {
@@ -20,6 +19,7 @@ exports.getUser = async (req, res ) => {
 }
 
 exports.getManyUser = async (req, res ) => {
+    const userRequest = req.user;
     const queryUser = _.omitBy(
         {
             name: req.query.name,
@@ -36,12 +36,14 @@ exports.getManyUser = async (req, res ) => {
         name: req.query.sort ? req.query.sort : {}
     }
     try {  
+        if(userRequest.role === ROLE_USER.customer || userRequest.role === ROLE_USER.owner) { return res.status(401).send('Bạn không có quyền truy cập') }
+        
         // const phone = query.phone;
-        const user = await UserService.findManyUser(queryUser, filter, sortByName);
+        const users = await UserService.findManyUser(queryUser, filter, sortByName);
         // console.log('user', user);
         
         const data = {
-            user,
+            users,
             pageNumber: req.query.pageNumber,
         }
         
@@ -63,7 +65,11 @@ exports.login = async (req, res ) => {
         // console.log('checkUser', checkUser);
         if(checkUser === false) { return res.status(404).send('mật khẩu không chính xác') };
 
-        const payload = data;
+        const payload = {
+            phone: user.phone,
+            role: user.role,
+            name: user.name
+        };
         const token = jwt.sign(payload, 'shhhhh', { algorithm: 'HS256', expiresIn: '1h' });
 
         const newData = {
@@ -79,7 +85,10 @@ exports.login = async (req, res ) => {
 
 exports.createUser = async (req, res ) => {
     const data = req.body;
+    const userRequest = req.user;
     try {
+        if(userRequest.role === ROLE_USER.customer || userRequest.role === ROLE_USER.owner) { return res.status(401).send('Bạn không có quyền truy cập') }
+
         if(_.isNil(data.name) || _.isNil(data.phone) || _.isNil(data.email) || _.isNil(data.password)) { return res.status(400).send('name, phone, email, password is required'); }
         const user = await UserService.findUserByPhone(data.phone);
         if(!_.isNil(user)) { return res.status(406).send('số điện thoại đã được đăng ký') }; 
@@ -104,7 +113,10 @@ exports.createUser = async (req, res ) => {
 
 exports.softDeleteUser = async (req, res ) => {
     const user_id = req.params.id;
+    const userRequest = req.user;
     try {
+        if(userRequest.role === ROLE_USER.customer || userRequest.role === ROLE_USER.owner) { return res.status(401).send('Bạn không có quyền truy cập') }
+        
         const user = await UserService.findUserById(user_id);
         if(_.isNil(user)) { return res.status(404).send('Not found') };
 
@@ -117,7 +129,10 @@ exports.softDeleteUser = async (req, res ) => {
 
 exports.restoreUser = async (req, res ) => {
     const user_id = req.params.id;
+    const userRequest = req.user;
     try {
+        if(userRequest.role === ROLE_USER.customer || userRequest.role === ROLE_USER.owner) { return res.status(401).send('Bạn không có quyền truy cập') }
+
         await UserService.restoreUser(user_id);
         return res.status(200).send('thanh cong');
     } catch (error) {
@@ -126,13 +141,15 @@ exports.restoreUser = async (req, res ) => {
 }
 
 exports.deleteUser = async (req, res ) => {
+    const userRequest = req.user;
     const user_id = req.params.id;
     try {
+        if(userRequest.role === ROLE_USER.customer || userRequest.role === ROLE_USER.owner) { return res.status(401).send('Bạn không có quyền truy cập') }
+
         const user = await UserService.findUserDeleted(user_id);
         if(_.isNil(user)) { return res.status(404).send('Không tìm thấy user') };
 
         await UserService.deleteUserById(user._id);
-        console.log('user: ', user);
         return res.status(200).send('thanh cong');
     } catch (error) {
         console.log('error', error);
@@ -145,7 +162,6 @@ exports.updateUser = async (req, res ) => {
     try {
         const result = await UserService.updateUser(user_id, data.name, data.email);
         if(_.isNil(result)) { return res.status(404).send('Không tìm thấy user') };
-        console.log('result: ', result);
         return res.status(200).json(result);
     } catch (error) {
         console.log('error', error);

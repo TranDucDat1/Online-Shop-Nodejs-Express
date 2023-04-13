@@ -20,9 +20,10 @@ exports.getUser = async (req, res ) => {
 
 exports.getManyUser = async (req, res ) => {
     const userRequest = req.user;
+    const searchName= new RegExp(req.query.name, 'i');
     const queryUser = _.omitBy(
         {
-            name: req.query.name,
+            name: searchName,
             phone: req.query.phone,
         },
         _.isNil

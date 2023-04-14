@@ -7,8 +7,12 @@ const productSchema = new Schema(
         price: { type: Number },
         amount: { type: Number },
         description: { type: String },
-        image: { type: String }, // cos thay doi
-        catalog_id: { type: String },
+        image: { 
+            data: { type: Buffer },
+            contentType: { type: String }    
+        },
+        // thẻ select
+        catalog_name: { type: String },
     },
     {
         timestamps: {

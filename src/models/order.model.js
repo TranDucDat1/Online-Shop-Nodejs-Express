@@ -3,9 +3,14 @@ const { Schema } = mongoose;
 
 const orderSchema = new Schema(
     {
-        name: { type: String },
-        user_id: { type: String },
-        cart_id: { type: String }
+        user_name: { type: String },
+        user_phone: { type: String },
+        uer_address: { type: String },
+        user_id: { type: mongoose.Types.ObjectId },
+        product_name: { type: String },
+        amount: { type: String },
+        totalPrice: { type: Number },
+        status: { type: Number },
     },
     {
         timestamps: {

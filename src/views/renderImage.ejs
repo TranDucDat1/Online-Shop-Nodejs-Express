@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Image Uploading</title>
+</head>
+
+<body>
+	<h1>To Upload Image on mongoDB</h1>
+	<hr />
+	<div>
+		<form action="/app/product/create-product" method="POST" enctype="multipart/form-data">
+			<div>
+				<label for="name">Tên sản phẩm</label>
+				<input type="text" id="name" placeholder="Name" value="" name="name" required />
+			</div>
+			<div>
+				<label for="price">Giá</label>
+				<input type="text" id="price" placeholder="price" value="" name="price" required />
+			</div>
+			<div>
+				<label for="amount">Số lượng</label>
+				<input type="text" id="amount" placeholder="amount" value="" name="amount" required />
+			</div>
+			<div>
+				<label for="catalog_name">Tên danh mục</label>
+				<input type="text" id="catalog_name" placeholder="catalog_name" value="" name="catalog_name" required />
+			</div>
+			<div>
+				<label for="description">Mô tả sản phẩm</label>
+				<textarea id="description" name="description" value="" rows="2" placeholder="Description" required></textarea>
+			</div>
+			<div>
+				<label for="image">Upload Image</label>
+				<input type="file" id="image" name="image" value="" required />
+			</div>
+			<div>
+				<button type="submit">Submit</button>
+			</div>
+		</form>
+	</div>
+
+	<hr />
+
+	<h1>Uploaded Images</h1>
+	<div>
+		<% items.forEach(function(image) { %>
+			<div>
+				<div>
+					<img src="data:image/<%=image.image.contentType%>;base64,
+					<%=image.image.data.toString('base64')%>" />
+					<div>
+						<h5>
+							<%= image.name %>
+						</h5>
+
+						<p>
+							<%= image.description %>
+						</p>
+
+						<p>
+							Giá: <%= image.price %>
+						</p>
+
+						<p>
+							Số lượng: <%= image.amount %>
+						</p>
+					</div>
+				</div>
+			</div>
+			<hr />
+			<% }) %>
+	</div>
+</body>
+
+</html>

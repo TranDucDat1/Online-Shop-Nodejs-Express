@@ -4,6 +4,10 @@ const app = express();
 const mongoose = require('mongoose');
 const { join } = require('path');
 const dotenv = require('dotenv');
+const bodyParser = require('body-parser');
+
+app.set('view engine', 'ejs');
+app.set('views', join(__dirname, 'views'));
 
 dotenv.config({
     path: join(__dirname, '../.env'),
@@ -22,6 +26,9 @@ try {
     console.log('Lỗi server');
 }
 
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
 app.use(express.json());
 
 app.use(morgan('combined'));
@@ -37,5 +44,5 @@ app.use('/app', ROUTE)
 
 
 app.listen(PORT, () => {
-    console.log(`App listening on ${PORT}}`);
+    console.log(`App listening on ${PORT}`);
 }); 

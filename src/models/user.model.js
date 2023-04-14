@@ -9,8 +9,8 @@ const userSchema = new Schema(
         email: { type: String, required: true},
         password: { type: String, required: true},
         role: { type: Number },
-        cart_id: { type: String },
         status: { type: Number },
+        address: { type: String }
     },
     {
         timestamps: {

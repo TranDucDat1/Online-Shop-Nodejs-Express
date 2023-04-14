@@ -103,12 +103,11 @@ exports.createUser = async (req, res ) => {
         };
 
         await UserService.createUser(newData);
-        
-        console.log('password: ', newData);
-        console.log('request: ', req.body);
+
         return res.status(200).send('thanh cong');
     } catch (error) {
         console.log('error', error);
+        return res.status(500).send('lỗi server')
     }
 }
 

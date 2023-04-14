@@ -3,7 +3,8 @@ const { Schema } = mongoose;
 
 const cartSchema = new Schema(
     {
-        items: [{ product_id: {type: String }, quantity: {type: Number} }]
+        items: [{ product_id: {type: String }, quantity: {type: Number} }],
+        user_id: { type: mongoose.Types.ObjectId },
     },
     {
         timestamps: {

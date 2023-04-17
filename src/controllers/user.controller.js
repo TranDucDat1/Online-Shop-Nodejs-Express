@@ -67,6 +67,7 @@ exports.login = async (req, res ) => {
         if(checkUser === false) { return res.status(404).send('mật khẩu không chính xác') };
 
         const payload = {
+            user_id: user._id,
             phone: user.phone,
             role: user.role,
             name: user.name

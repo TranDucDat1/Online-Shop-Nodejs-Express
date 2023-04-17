@@ -4,8 +4,8 @@ const mongoose_delete = require('mongoose-delete');
 
 const reviewSchema = new Schema(
     {
-        user_id: { type: String },
-        product_id: { type: String },
+        user_id: { type: mongoose.Types.ObjectId },
+        product_id: { type: mongoose.Types.ObjectId },
         comment: { type: String },
         rate: { type: Number },
     },

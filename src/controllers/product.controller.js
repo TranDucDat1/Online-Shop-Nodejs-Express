@@ -1,8 +1,6 @@
-
-
 const fs = require('fs');
 const path = require('path');
-const { ProductService } = require('../service');
+const { ProductService, ReviewService } = require('../service');
 
 exports.createProduct = async (req, res) => {
     const data = req.body;
@@ -21,16 +19,29 @@ exports.createProduct = async (req, res) => {
         await ProductService.createProduct(newData);
         return res.status(200).send('thanh cong');
     } catch (error) {
-        return res.status(500).send('Lỗi server');
         console.log('error:', error);
+        return res.status(500).send('Lỗi server');
     }
 }
 
 exports.getProduct = async (req, res) => {
-    const items = await ProductService.findProduct();
-    // console.log('data', items);
-    res.render('renderImage', { items: items });
-    // return res.status(200).send('thanh cong');
+    // using view engine
+    // const items = await ProductService.findProduct();
+    // res.render('renderImage', { items: items });
+    
+    const product_id = req.params.id;
+    
+    const [ product, review ] = await Promise.all([
+        ProductService.findProductById(product_id),
+        ReviewService.findReviewByProductId({ product_id })
+    ])
+
+    const result = {
+        product,
+        review
+    }
+
+    return res.status(200).send(result);
 };
 
 exports.getManyProduct = async (req, res) => {

@@ -33,15 +33,15 @@ exports.getManyUser = async (req, res ) => {
         limit:  req.query.limit ? Number(req.query.limit) : 10
     }
 
-    const sortByName = {
-        name: req.query.sort ? req.query.sort : {}
-    }
+    const sortByName = _.omitBy({
+        name: req.query.sort
+    }, _.isNil)
     try {  
         if(userRequest.role === ROLE_USER.customer || userRequest.role === ROLE_USER.owner) { return res.status(401).send('Bạn không có quyền truy cập') }
         
         // const phone = query.phone;
         const users = await UserService.findManyUser(queryUser, filter, sortByName);
-        // console.log('user', user);
+        if(_.isEmpty(users)) { return res.status(404).send('không tìm thấy người dùng nào')}
         
         const data = {
             users,

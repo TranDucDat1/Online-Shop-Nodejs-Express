@@ -8,20 +8,37 @@ exports.getCart = async (req, res) => {
     return res.status(200).send(cart);
 }
 
-//only add one
+// để bên FE xử lý cộng amount, BE chỉ thực hiện update khi FE gửi dữ liệu lên
 exports.addProductToCart = async (req, res) => {
     const user_id = req.user.user_id;
-    const product_id = req.body.items[0].product_id;
-    const quantity = Number(req.body.items[0].quantity);
+    const items = req.body.items;
+    
+    const products_id = [];
+    for (const item of items) {
+        products_id.push(item.product_id);
+    }
+    console.log('items:', items);
 
-    const items = [{product_id, quantity}]
+    // xử lý khi một sản phẩm đã hết hàng thì không cho sản phẩm đó vào giỏ hàng
+    const soldOut = [];
+    const products = await ProductService.findManyProductById(products_id);
+    for (const product of products) {
+        for (const item in items) {
+            if(String(product._id) === String(items[item].product_id)) {
+                if(product.amount < Number(items[item].quantity)) {
+                    soldOut.push(product.name);
+                    items.splice(item, 1);
+                }
+            }
+        }
+    }
 
-    const product = await ProductService.findProductById(product_id);
-    if(product.amount < quantity) { return res.status(404).send('hết hàng') }
+    console.log('sau khi cat items: ', items);
+    console.log('soldOut', soldOut);
 
     await CartService.findAndUpdateCart(user_id, items);
 
-    return res.status(200).send('Thành công');
+    return res.status(200).send(items);
 };
 
 exports.deleteAllCart = async (req, res) => {

@@ -8,6 +8,8 @@ exports.findProduct = async () => await Product.find({});
 
 exports.findProductById = async (id) => await Product.findById(id);
 
+exports.findManyProductById = async (ids) => await Product.find({ _id: { $in: ids } });
+
 exports.findProductDelete = async (id) => await Product.findOneDeleted({ _id: id });
 
 exports.deleteProductById = async (id) => await Product.deleteOne({ _id: id });

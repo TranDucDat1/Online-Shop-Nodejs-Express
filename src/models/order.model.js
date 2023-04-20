@@ -10,6 +10,11 @@ const orderSchema = new Schema(
         items: [{ product_name: { type: String }, amount: { type: Number }, totalPriceProduct: { type: Number }}],
         totalPrice: { type: Number },
         status: { type: Number },
+        status_change: { type: String },
+        cancel_date: { type: String },
+        shipping_date: { type: String },
+        success_date: { type: String },
+        pending_date: { type: String },
     },
     {
         timestamps: {

@@ -2,6 +2,10 @@ const Product = require('../models/product.model');
 
 exports.createProduct = async (data) => await Product.create(data);
 
+exports.updateViewProduct = async (id) => await Product.updateOne({ _id: id }, { $inc: { view: 1 } }, { upsert: true });
+
+exports.subAmountProduct = async (product_id, subtractionAmount) => await Product.updateOne({ _id: product_id }, { $inc: { amount: -subtractionAmount } });
+
 exports.updateProduct = async (product_id, data) => await Product.create(product_id, data);
 
 exports.findProduct = async () => await Product.find({});

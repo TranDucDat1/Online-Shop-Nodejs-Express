@@ -1,8 +1,15 @@
 const fs = require('fs');
 const path = require('path');
 const _ = require('lodash');
+const EventEmitter = require('events');
+const events = new EventEmitter();
 
 const { ProductService, ReviewService } = require('../service');
+
+events.on('addView', async (product_id) => {
+    await ProductService.updateViewProduct(product_id);
+    console.log('Thành công');
+})
 
 exports.createProduct = async (req, res) => {
     const data = req.body;
@@ -108,6 +115,7 @@ exports.getProduct = async (req, res) => {
         if(_.isNil(product)) { return res.status(404).send('Không tìm thấy sản phẩm') }
         if(_.isNil(review)) { return res.status(404).send('Không tìm thấy đánh giá') }
     
+        events.emit('addView', product_id);
         const result = {
             product,
             review

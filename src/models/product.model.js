@@ -14,6 +14,7 @@ const productSchema = new Schema(
         },
         // thẻ select
         catalog_name: { type: String },
+        view: { type: Number },
     },
     {
         timestamps: {

@@ -1,8 +1,16 @@
 const _ = require('lodash');
 const moment = require('moment');
+const EventEmitter = require('events');
+const events = new EventEmitter();
 
 const { OrderService, CartService, ProductService, UserService } = require('../service');
 const STATUS = require('../constants/order.constants');
+
+events.on('SubtractionAmountProduct', async(value) => {
+    for (const item of value) {
+        await ProductService.subAmountProduct(item.product_id, item.amount);
+    }
+});
 
 exports.getAllOrderUser = async (req, res) => {
     const pageNumber = Number(req.query.pageNumber);
@@ -32,7 +40,7 @@ exports.getDetailOrder = async (req, res) => {
 // BE sử lý, khi FE call api này thì chỉ cần có value trong cart
 exports.createOrder = async (req, res) => {
     const user = req.user;
-    const dayNow = moment().format("DD-MM-YYYY hh:mm");
+    const dayNow = moment().format("DD-MM-YYYY hh:mm a");
 
     const [getCart, getUser] = await Promise.all([CartService.findCartByUserId(user.user_id), UserService.findUserById(user.user_id)]);
     if(_.isNil(getCart)) { return res.status(404).send('không tìm thấy cart') }
@@ -46,7 +54,9 @@ exports.createOrder = async (req, res) => {
 
     let totalPrice = 0;
     const itemsOrder = [];
+    const productSubAmount = [];
     const products = await ProductService.findManyProductById(products_id);
+    if(_.isNil(products)) { return res.status(404).send('không tìm thấy sản phẩm') }
     for (const product of products) {
         for (const item of items) {
             if(String(item.product_id) === String(product._id)) {
@@ -56,10 +66,14 @@ exports.createOrder = async (req, res) => {
                     amount: Number(item.quantity),
                     totalPriceProduct: Number(totalPrice),
                 })
+                productSubAmount.push({
+                    amount: Number(item.quantity),
+                    product_id: product._id,
+                });
             }
         }
     }
-
+    
     const data = {
         user_name: user.name,
         user_phone: user.phone,
@@ -70,9 +84,17 @@ exports.createOrder = async (req, res) => {
         status: 0,
         pending_date: dayNow
     }
-
+    
     await OrderService.createOrder(data);
+    
+    // Trừ sản phẩm khi tạo ra order
+    events.emit('SubtractionAmountProduct', productSubAmount);
 
+    // Update empty cart items
+    const itemsOfCart = [];
+    await CartService.updateCart(user.user_id, itemsOfCart);
+    
+    
     return res.status(200).send('Thành công');
 };
 

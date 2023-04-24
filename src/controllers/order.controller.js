@@ -62,9 +62,10 @@ exports.createOrder = async (req, res) => {
             if(String(item.product_id) === String(product._id)) {
                 totalPrice = totalPrice + item.quantity * product.price;
                 itemsOrder.push({
+                    product_id: product._id,
                     product_name: product.name,
                     amount: Number(item.quantity),
-                    totalPriceProduct: Number(totalPrice),
+                    totalPriceProduct: Number(item.quantity * product.price),
                 })
                 productSubAmount.push({
                     amount: Number(item.quantity),

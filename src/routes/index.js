@@ -7,6 +7,7 @@ const Cart = require('./cart.route');
 const Catalog = require('./catalog.route');
 const Order = require('./order.route');
 const Review = require('./review.route');
+const Statistic = require('./statistic.route');
 
 
 router.use('/user', User);
@@ -15,6 +16,7 @@ router.use('/cart', Cart);
 router.use('/catalog', Catalog);
 router.use('/order', Order);
 router.use('/review', Review);
+router.use('/statistic', Statistic);
 
 
 module.exports = router;

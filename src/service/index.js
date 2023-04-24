@@ -4,3 +4,4 @@ module.exports.CatalogService = require('./catalog.service');
 module.exports.ReviewService = require('./review.service');
 module.exports.CartService = require('./cart.service');
 module.exports.OrderService = require('./order.service');
+module.exports.Statistic = require('./statistic.service');

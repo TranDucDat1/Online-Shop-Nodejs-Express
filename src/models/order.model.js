@@ -7,7 +7,7 @@ const orderSchema = new Schema(
         user_phone: { type: String },
         uer_address: { type: String },
         user_id: { type: mongoose.Types.ObjectId },
-        items: [{ product_name: { type: String }, amount: { type: Number }, totalPriceProduct: { type: Number }}],
+        items: [{ product_id: { type: mongoose.Types.ObjectId }, product_name: { type: String }, amount: { type: Number }, totalPriceProduct: { type: Number }}], //
         totalPrice: { type: Number },
         status: { type: Number },
         status_change: { type: String },
